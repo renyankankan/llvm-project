@@ -86,6 +86,7 @@
 #include "llvm/Transforms/Utils/EntryExitInstrumenter.h"
 #include "llvm/Transforms/Utils/NameAnonGlobals.h"
 #include "llvm/Transforms/Utils/SymbolRewriter.h"
+#include "llvm/Transforms/Obfuscation/Obfuscation.h"
 #include <memory>
 using namespace clang;
 using namespace llvm;
@@ -1322,6 +1323,11 @@ void EmitAssemblyHelper::EmitAssemblyWithNewPassManager(
 
   ModulePassManager MPM;
 
+  // PB.registerPipelineStartEPCallback(
+  //         [](ModulePassManager &MPM, PassBuilder::OptimizationLevel Level) {
+  //           MPM.addPass(Obfuscation());
+  //         });
+
   if (!CodeGenOpts.DisableLLVMPasses) {
     // Map our optimization levels into one of the distinct levels used to
     // configure the pipeline.
@@ -1329,6 +1335,11 @@ void EmitAssemblyHelper::EmitAssemblyWithNewPassManager(
 
     bool IsThinLTO = CodeGenOpts.PrepareForThinLTO;
     bool IsLTO = CodeGenOpts.PrepareForLTO;
+
+    PB.registerPipelineStartEPCallback(
+          [](ModulePassManager &MPM, PassBuilder::OptimizationLevel Level) {
+            MPM.addPass(Obfuscation());
+          });
 
     if (LangOpts.ObjCAutoRefCount) {
       PB.registerPipelineStartEPCallback(

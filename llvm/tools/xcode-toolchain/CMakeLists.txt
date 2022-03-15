@@ -81,7 +81,7 @@ if(NOT toolchains_match)
 endif()
 set(toolchains_dir ${CMAKE_MATCH_1})
 
-set(LLVMToolchainDir "${CMAKE_INSTALL_PREFIX}/Toolchains/LLVM${PACKAGE_VERSION}.xctoolchain/")
+set(LLVMToolchainDir "${CMAKE_INSTALL_PREFIX}/Toolchains/LLVM_hikari${PACKAGE_VERSION}.xctoolchain/")
 
 add_custom_command(OUTPUT ${LLVMToolchainDir}
                     COMMAND ${CMAKE_COMMAND} -E make_directory ${LLVMToolchainDir})
@@ -91,6 +91,8 @@ add_custom_command(OUTPUT ${LLVMToolchainDir}/Info.plist
                   COMMAND ${CMAKE_COMMAND} -E remove ${LLVMToolchainDir}/Info.plist
                   COMMAND /usr/libexec/PlistBuddy -c "Add:CFBundleIdentifier string org.llvm.${PACKAGE_VERSION}" "${LLVMToolchainDir}/Info.plist"
                   COMMAND /usr/libexec/PlistBuddy -c "Add:CompatibilityVersion integer ${COMPAT_VERSION}" "${LLVMToolchainDir}/Info.plist"
+                  COMMAND /usr/libexec/PlistBuddy -c "Add:OverrideBuildSettings:ENABLE_BITCODE string NO" "${LLVMToolchainDir}/Info.plist"
+                  COMMAND /usr/libexec/PlistBuddy -c "Add:OverrideBuildSettings:COMPILER_INDEX_STORE_ENABLE string NO" "${LLVMToolchainDir}/Info.plist"
                   )
 
 add_custom_target(build-xcode-toolchain
