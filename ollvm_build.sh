@@ -1,7 +1,16 @@
+# 安装brew
+# /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+# 安装ninja
+# brew install ninja
+# 安装cmake
+# brew install cmake
+
 # 清空目录
 rm -rf ../llvm-project13-build && mkdir ../llvm-project13-build && cd ../llvm-project13-build
 # 生成Ninja构建
 cmake -G "Ninja" -DLLDB_CODESIGN_IDENTITY='' -DCMAKE_BUILD_TYPE=MinSizeRel -DLLVM_APPEND_VC_REV=on -DLLDB_USE_SYSTEM_DEBUGSERVER=YES -DLLVM_CREATE_XCODE_TOOLCHAIN=on -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_INSTALL_PREFIX=~/Library/Developer/ ../llvm-project13/llvm
+# 如果出现Could not identify toolchain dir错误，请运行如下命令解决后再重试
+# sudo xcode-select -r
 # 构建
 ninja -j8
 # 清空xcode工具链
@@ -13,4 +22,6 @@ sudo rsync -a --ignore-existing /Applications/Xcode.app/Contents/Developer/Toolc
 sudo rm ~/Library/Developer/Toolchains/LLVM_hikari13.0.1.xctoolchain/ToolchainInfo.plist
 # 处理特定文件夹
 sudo rsync -a --ignore-existing ~/Library/Developer/Toolchains/LLVM_hikari13.0.1.xctoolchain/usr/lib/clang/13.0.0/ ~/Library/Developer/Toolchains/LLVM_hikari13.0.1.xctoolchain/usr/lib/clang/13.0.1
+rm -rf ~/Library/Developer/Toolchains/LLVM_hikari13.0.1.xctoolchain/usr/lib/swift/clang
+sudo rsync -ra ~/Library/Developer/Toolchains/LLVM_hikari13.0.1.xctoolchain/usr/lib/clang/13.0.1/* ~/Library/Developer/Toolchains/LLVM_hikari13.0.1.xctoolchain/usr/lib/swift/clang
 sudo rm -rf ~/Library/Developer/Toolchains/LLVM_hikari13.0.1.xctoolchain/usr/lib/clang/13.0.0
